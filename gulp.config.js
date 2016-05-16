@@ -1,6 +1,7 @@
 module.exports = function(){
   var client = './src/client/';
-  var clientApp = client + 'app/'
+  var clientApp = client + 'app/';
+  var temp = './.tmp/';
   
   var config = {
     
@@ -11,6 +12,7 @@ module.exports = function(){
 			'./*.js'
 		],
     client: client,
+    css: temp + 'styles.css',
     index: client + 'index.html',
     js: [
       clientApp + '**/*.module.js',
