@@ -95,6 +95,11 @@ gulp.task('serve-dev', ['inject'] , function(){
 		});
 });
 
+function changeEvent(event){
+	var srcPattern = new RegExp('/.*(?=/)' + config.source + '}/');
+	log ('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+}
+
 function startBrowserSync(){
 	if (browserSync.active){
 		return;
@@ -102,10 +107,19 @@ function startBrowserSync(){
 	
 	log('Start browser-sync on port ' + port);
 	
+	gulp.watch([config.less], ['styles'])
+		.on('change', function(event) {
+			changeEvent(event);
+		});
+	
 	var options = {
 		proxy: 'localhost:' + port,
 		port: 3000,
-		files: [config.client + '**/*.*'],
+		files: [
+			config.client + '**/*.*',
+			'!' + config.less, //!Watch except for this one					
+			config.temp + '**/*.css'	
+		],
 		ghostMode: {
 			clicks: true,
 			location: false,
