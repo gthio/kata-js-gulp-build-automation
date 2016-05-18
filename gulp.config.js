@@ -24,6 +24,8 @@ module.exports = function(){
     less: client + '/styles/styles.less',
     server: server,
     
+    browserReloadDelay: 1000,
+    
     bower: {
       json: require('./bower.json'),
       directory: './bower_components/',

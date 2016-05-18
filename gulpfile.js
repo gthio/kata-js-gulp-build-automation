@@ -82,6 +82,10 @@ gulp.task('serve-dev', ['inject'] , function(){
 		.on('restart', ['vet'],function(){
 			log('***nodemon restarted');
 			log('files changed on restart');
+			setTimeout(function(){
+				browserSync.notify('reloading now ...');
+				browserSync.reload({stream: false});
+			}, config.browserReloadDelay);
 		})
 		.on('start', function(){
 			log('***nodemon started');
@@ -132,7 +136,7 @@ function startBrowserSync(){
 		logPrefix: 'gulp-patterns',
 		notify: true,
 		reloadDelay: 1000
-	}
+	};
 	
 	browserSync(options);
 }
