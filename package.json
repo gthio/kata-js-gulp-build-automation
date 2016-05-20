@@ -38,6 +38,7 @@
     "gulp-nodemon": "^2.0.7",
     "gulp-plumber": "^1.1.0",
     "gulp-print": "^2.0.1",
+    "gulp-task-listing": "^1.0.1",
     "gulp-util": "^3.0.7",
     "jscs": "^3.0.3",
     "jshint": "^2.9.2",
