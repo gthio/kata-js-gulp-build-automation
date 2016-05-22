@@ -77,6 +77,18 @@ gulp.task('clean-styles', function(done){
 	clean(config.temp + '**/*.css', done);
 });
 
+gulp.task('clean-code', function(done){
+	
+	var files = [].concat(
+		config.temp + '**/*.js',
+		config.build + '**/*.html',
+		config.build + 'js/**.*.js'
+	);
+	
+	clean(files, done);
+});
+
+
 gulp.task('less-watcher', function() {
 	gulp.watch([config.less], ['styles']);
 });
