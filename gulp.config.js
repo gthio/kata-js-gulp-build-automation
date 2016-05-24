@@ -6,7 +6,7 @@ module.exports = function(){
   
   var config = {
     
-    temp: './.tmp/',
+    temp: temp,
   
     alljs: [
 			'./src/**/*.js',
@@ -55,6 +55,8 @@ module.exports = function(){
       directory: config.bower.directory,
       ignorePath: config.bower.ignorePath
     };
+    
+    return options;
   };
   
   return config;
