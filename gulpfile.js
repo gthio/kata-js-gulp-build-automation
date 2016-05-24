@@ -118,7 +118,7 @@ gulp.task('wiredep', function(){
 		.pipe(gulp.dest(config.client));
 });
 
-gulp.task('inject', ['wiredep', 'styles'], function(){
+gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function(){
 
 	log('Wire up the bower css and app js into the html');
 	
@@ -126,6 +126,19 @@ gulp.task('inject', ['wiredep', 'styles'], function(){
 		.src(config.index)
 		.pipe($.inject(gulp.src(config.css)))
 		.pipe(gulp.dest(config.client));
+});
+
+gulp.task('optimize', ['inject'], function() {
+	log('optimizing js, css and html');
+	
+	var templateCache = config.temp + config.templateCache.file;
+	
+	return gulp
+		.src(config.index)
+		.pipe($.plumber())
+		.pipe($.inject(gulp.src(templateCache, {read: false}), {
+			starttag: '<!-- inject:templates:js -->'}))
+		.pipe(gulp.dest(config.build));
 });
 
 gulp.task('serve-dev', ['inject'] , function(){
