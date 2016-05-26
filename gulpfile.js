@@ -133,13 +133,17 @@ gulp.task('optimize', ['inject'], function() {
 	
 	var assets = $.useref.assets({searchPath: './'});
 	var templateCache = config.temp + config.templateCache.file;
+	var cssFilter = $.filter('**/*.css');
 	
 	return gulp
 		.src(config.index)
 		.pipe($.plumber())
 		.pipe($.inject(gulp.src(templateCache, {read: false}), {
 			starttag: '<!-- inject:templates:js -->'}))
-		.pipe(assets)
+		.pipe(assets)		
+		.pipe(cssFilter)	
+		.pipe($.csso())
+		.pipe(cssFilter.restore())		
 		.pipe(assets.restore())
 		.pipe($.useref())
 		.pipe(gulp.dest(config.build));
