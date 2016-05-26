@@ -163,6 +163,8 @@ gulp.task('optimize', ['inject'], function() {
 		
 		.pipe($.revReplace())
 		
+		.pipe($.rev.manifest())
+		
 		.pipe(gulp.dest(config.build));
 });
 
