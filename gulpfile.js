@@ -154,7 +154,7 @@ gulp.task('optimize', ['inject'], function() {
 });
 
 gulp.task('serve-build', ['optimize'], function(){
-	serve(true);
+	serve(false);
 });
 
 gulp.task('serve-dev', ['inject'] , function(){
