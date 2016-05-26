@@ -134,8 +134,8 @@ gulp.task('optimize', ['inject'], function() {
 	var assets = $.useref.assets({searchPath: './'});
 	var templateCache = config.temp + config.templateCache.file;
 	var cssFilter = $.filter('**/*.css');
-	var jsLibFilter = $.filter('**/lib.js');
-	var jsAppFilter = $.filter('**/app.js');
+	var jsLibFilter = $.filter('**/' + config.optimized.lib);
+	var jsAppFilter = $.filter('**/' + config.optimized.app);
 	
 	return gulp
 		.src(config.index)
