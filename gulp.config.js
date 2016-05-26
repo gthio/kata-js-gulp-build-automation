@@ -1,4 +1,5 @@
 module.exports = function(){
+  
   var client = './src/client/';
   var clientApp = client + 'app/';
   var server = './src/server/';
@@ -16,6 +17,7 @@ module.exports = function(){
     client: client,
     css: temp + 'styles.css',
     fonts: './bower_components/font-awesome/fonts/**/*.*',
+    html: clientApp + '**/*.html',
     htmltemplates: clientApp + '**/*.html',
     images: client + 'images/**/*.*',
     index: client + 'index.html',

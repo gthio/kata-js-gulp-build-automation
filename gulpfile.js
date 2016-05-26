@@ -145,8 +145,16 @@ gulp.task('optimize', ['inject'], function() {
 		.pipe(gulp.dest(config.build));
 });
 
+gulp.task('serve-build', ['optimize'], function(){
+	serve(true);
+});
+
 gulp.task('serve-dev', ['inject'] , function(){
-	var isDev = true;
+	serve(true);
+});
+
+function serve(isDev){
+	
 	var nodeOptions = {
 		script: config.nodeServer,
 		delayTime: 1,
@@ -157,10 +165,10 @@ gulp.task('serve-dev', ['inject'] , function(){
 		watch: [config.server]
 	};
 	
-	$.nodemon(nodeOptions)
-		.on('restart', ['vet'],function(){
+	return $.nodemon(nodeOptions)
+		.on('restart', ['vet'],function(ev){
 			log('***nodemon restarted');
-			log('files changed on restart');
+			log('files changed on restart: \n' + ev);
 			setTimeout(function(){
 				browserSync.notify('reloading now ...');
 				browserSync.reload({stream: false});
@@ -168,7 +176,7 @@ gulp.task('serve-dev', ['inject'] , function(){
 		})
 		.on('start', function(){
 			log('***nodemon started');
-			startBrowserSync();
+			startBrowserSync(isDev);
 		})
 		.on('crash', function(){
 			log('***nodemon crashed');
@@ -176,33 +184,41 @@ gulp.task('serve-dev', ['inject'] , function(){
 		.on('exit', function(){
 			log('nodemon exit');
 		});
-});
+}
 
 function changeEvent(event){
 	var srcPattern = new RegExp('/.*(?=/)' + config.source + '}/');
 	log ('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
 }
 
-function startBrowserSync(){
+function startBrowserSync(isDev){
 	if (args.nosync || browserSync.active){
 		return;
 	}
 	
 	log('Start browser-sync on port ' + port);
 	
-	gulp.watch([config.less], ['styles'])
-		.on('change', function(event) {
-			changeEvent(event);
-		});
+	if (isDev){		
+		gulp.watch([config.less], ['styles'])
+			.on('change', function(event) {
+				changeEvent(event);
+			});	
+	}
+	else {
+		gulp.watch([config.less, config.js, config.html], ['optimize', browserSync.reload])
+			.on('change', function(event) {
+				changeEvent(event);
+			});		
+	}
 	
 	var options = {
 		proxy: 'localhost:' + port,
 		port: 3000,
-		files: [
+		files: isDev ? [
 			config.client + '**/*.*',
 			'!' + config.less, //!Watch except for this one					
 			config.temp + '**/*.css'	
-		],
+		] : [],
 		ghostMode: {
 			clicks: true,
 			location: false,
