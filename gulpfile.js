@@ -50,7 +50,7 @@ gulp.task('images', ['clean-images'],function(){
 	
 	return gulp.src(config.images)
 		.pipe($.imagemin({optimizationLevel: 4}))
-		.pipe(gulp.dest(config.build + 'images'))
+		.pipe(gulp.dest(config.build + 'images'));
 });
 
 gulp.task('clean', function(done){
@@ -63,15 +63,15 @@ gulp.task('clean', function(done){
 	del(delconfig, done);
 	
 	clean(config.build + 'fonts/**/*.*', done);
-})
+});
 
 gulp.task('clean-fonts', function(done){
 	clean(config.build + 'fonts/**/*.*', done);
-})
+});
 
 gulp.task('clean-images', function(done){
 	clean(config.build + 'images/**/*.*', done);
-})
+});
 
 gulp.task('clean-styles', function(done){
 	clean(config.temp + '**/*.css', done);
@@ -200,6 +200,10 @@ gulp.task('serve-dev', ['inject'] , function(){
 	serve(true);
 });
 
+gulp.task('test', ['vet', 'templatecache'], function(done) {
+	startTest(true, done);
+});
+
 function serve(isDev){
 	
 	var nodeOptions = {
@@ -281,6 +285,34 @@ function startBrowserSync(isDev){
 	};
 	
 	browserSync(options);
+}
+
+function startTest(singleRun, done){
+	var karma = require('karma').server;
+	var serverSpecs = config.serverIntegrationSpecs;
+	var excludeFiles = [];
+	
+	excludeFiles = serverSpecs;
+	
+	karma.start({
+		configFile: __dirname + '/karma.conf.js',
+		exclude: excludeFiles,
+		singleRun: !!singleRun
+	}, karmaCompleted);
+	
+	function karmaCompleted(karmaResult){
+		log('Karma completed.');
+		
+		if (karmaResult === 1){
+			done('karma: test failed with code ' + karmaResult);
+		}
+		else{
+			done();
+		}
+		
+			log('Karma completed 2.');
+	}
+
 }
 
 function clean(path, done){
