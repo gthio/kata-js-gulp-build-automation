@@ -103,7 +103,7 @@ module.exports = function(){
         reporters: [
           {type: 'html', subdir: 'report-html'},
           {type: 'lcov', subdir: 'report-lcov'},
-          {type: 'text-summary'}
+          {type: 'text-summary', subdir: '.', file: 'text-summary.txt' },
         ]
       },
       preprocessors: {}
