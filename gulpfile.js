@@ -308,15 +308,13 @@ function startTest(singleRun, done){
 		log('Karma completed.');
 		
 		if (karmaResult === 1){
-			done('karma: test failed with code ' + karmaResult);
+			done(new Error('karma: test failed with code ' + karmaResult));
 		}
 		else{
 			done();
-		}
-		
-			log('Karma completed 2.');
+		}		
+		log('Karma completed 2.');
 	}
-
 }
 
 function clean(path, done){
