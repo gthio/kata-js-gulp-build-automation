@@ -204,6 +204,10 @@ gulp.task('test', ['vet', 'templatecache'], function(done) {
 	startTest(true, done);
 });
 
+gulp.task('autotest', ['vet', 'templatecache'], function(done){
+	startTest(false, done);
+});
+
 function serve(isDev){
 	
 	var nodeOptions = {
