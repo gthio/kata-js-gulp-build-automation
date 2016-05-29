@@ -128,6 +128,39 @@ gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function(){
 		.pipe(gulp.dest(config.client));
 });
 
+gulp.task('serve-specs', ['build-specs'], function(done){
+	log('run the spec runner');
+	
+	serve(true /* isDev */,
+		true /* spec runner */);
+		
+	done();
+});
+
+gulp.task('build-specs', ['templatecache'], function(){
+	
+	log('Building spec runner');
+	
+	var wiredep = require('wiredep').stream;
+	var options = config.getWiredepDefaultOptions();
+	
+	options.devDependencies = true;
+	
+	return gulp
+		.src(config.specRunner)
+		.pipe(wiredep(options))
+		.pipe($.inject(gulp.src(config.testlibraries),
+			{name: 'inject:testlibraries'}))
+		.pipe($.inject(gulp.src(config.js)))
+		.pipe($.inject(gulp.src(config.specHelpers),
+			{name: 'inject:spechelpers'}))
+		.pipe($.inject(gulp.src(config.specs),
+			{name: 'inject:specs'}))
+		.pipe($.inject(gulp.src(config.temp + config.templateCache.file),
+			{name: 'inject:templates'}))
+		.pipe(gulp.dest(config.client));
+});
+
 gulp.task('optimize', ['inject'], function() {
 	log('optimizing js, css and html');
 	
@@ -208,7 +241,7 @@ gulp.task('autotest', ['vet', 'templatecache'], function(done){
 	startTest(false, done);
 });
 
-function serve(isDev){
+function serve(isDev, specRunner){
 	
 	var nodeOptions = {
 		script: config.nodeServer,
@@ -231,7 +264,7 @@ function serve(isDev){
 		})
 		.on('start', function(){
 			log('***nodemon started');
-			startBrowserSync(isDev);
+			startBrowserSync(isDev, specRunner);
 		})
 		.on('crash', function(){
 			log('***nodemon crashed');
@@ -246,7 +279,7 @@ function changeEvent(event){
 	log ('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
 }
 
-function startBrowserSync(isDev){
+function startBrowserSync(isDev, specRunner){
 	if (args.nosync || browserSync.active){
 		return;
 	}
@@ -288,6 +321,10 @@ function startBrowserSync(isDev){
 		reloadDelay: 1000
 	};
 	
+	if (specRunner){
+		options.startPath = config.specRunnerFile;
+	}
+	
 	browserSync(options);
 }
 
@@ -312,7 +349,6 @@ function startTest(singleRun, done){
 			excludeFiles = serverSpecs;	
 		}
 	}
-	
 	
 	karma.start({
 		configFile: __dirname + '/karma.conf.js',
