@@ -59,8 +59,6 @@ gulp.task('clean', function(done){
 	
 	log('cleaning: ' + 
 		$.util.colors.blue(delconfig));
-		
-	del(delconfig, done);
 	
 	clean(config.build + 'fonts/**/*.*', done);
 });
